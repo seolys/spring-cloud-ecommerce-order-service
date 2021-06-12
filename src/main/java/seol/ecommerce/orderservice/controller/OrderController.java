@@ -29,6 +29,7 @@ public class OrderController {
 	private final ModelMapper mapper;
 	private final OrderService orderService;
 
+
 	@GetMapping("/health_check")
 	public String status() {
 		return String.format("It's working in Order Service on PORT %s", environment.getProperty("local.server.port"));
@@ -42,7 +43,6 @@ public class OrderController {
 		OrderDto savedOrderDto = orderService.createOrder(orderDto);
 
 		ResponseOrder responseOrder = mapper.map(savedOrderDto, ResponseOrder.class);
-
 		return ResponseEntity
 				.status(HttpStatus.CREATED) // NOTE: POST 요청에는 200(OK)이 아닌, 201(CREATED)를 반환하는것이 더 명확한 코드이다.
 				.body(responseOrder);

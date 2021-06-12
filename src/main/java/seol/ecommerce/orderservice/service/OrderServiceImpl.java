@@ -10,6 +10,7 @@ import seol.ecommerce.orderservice.dto.OrderDto;
 import seol.ecommerce.orderservice.exception.OrderNotFoundException;
 import seol.ecommerce.orderservice.jpa.OrderEntity;
 import seol.ecommerce.orderservice.jpa.OrderRepository;
+import seol.ecommerce.orderservice.messagequeue.KafkaProducer;
 
 @Slf4j
 @Service
@@ -18,6 +19,7 @@ public class OrderServiceImpl implements OrderService {
 
 	private final ModelMapper mapper;
 	private final OrderRepository orderRepository;
+	private final KafkaProducer kafkaProducer;
 
 	@Override
 	public OrderDto createOrder(OrderDto orderDto) {
@@ -26,9 +28,13 @@ public class OrderServiceImpl implements OrderService {
 
 		OrderEntity orderEntity = mapper.map(orderDto, OrderEntity.class);
 
+		// JPA
 		OrderEntity savedOrderEntity = orderRepository.save(orderEntity);
-
 		OrderDto savedOrderDto = mapper.map(savedOrderEntity, OrderDto.class);
+
+		// Kafka
+		kafkaProducer.send("example-catalog-topic", savedOrderDto);
+
 		return savedOrderDto;
 	}
 
@@ -38,7 +44,7 @@ public class OrderServiceImpl implements OrderService {
 		if (findOrder.isEmpty()) {
 			throw new OrderNotFoundException();
 		}
-		
+
 		OrderDto orderDto = mapper.map(findOrder.get(), OrderDto.class);
 		return orderDto;
 	}
