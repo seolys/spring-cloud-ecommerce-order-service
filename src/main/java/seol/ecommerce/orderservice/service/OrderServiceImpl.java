@@ -34,7 +34,6 @@ public class OrderServiceImpl implements OrderService {
 //		OrderDto savedOrderDto = mapper.map(savedOrderEntity, OrderDto.class);
 
 		// Kafka
-		
 		kafkaProducer.send("example-catalog-topic", orderDto);
 		orderProducer.send("orders", orderDto); // DB 저장
 
