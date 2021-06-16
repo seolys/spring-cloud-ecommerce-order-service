@@ -43,3 +43,9 @@ eureka:
 logging:
   level:
     seol.ecommerce.orderservice: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh, health, beans, httptrace, busrefresh, info, metrics, prometheus
