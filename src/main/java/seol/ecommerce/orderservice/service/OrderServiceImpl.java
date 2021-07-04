@@ -29,13 +29,13 @@ public class OrderServiceImpl implements OrderService {
 		orderDto.setTotalPrice(orderDto.getQty() * orderDto.getUnitPrice()); // 수량 x 단가
 
 		// JPA
-//		OrderEntity orderEntity = mapper.map(orderDto, OrderEntity.class);
-//		OrderEntity savedOrderEntity = orderRepository.save(orderEntity); // JPA통한 DB저장이 아닌, Kafka를 거쳐서 DB에 저장되도록 한다.
+		OrderEntity orderEntity = mapper.map(orderDto, OrderEntity.class);
+		OrderEntity savedOrderEntity = orderRepository.save(orderEntity); // JPA통한 DB저장이 아닌, Kafka를 거쳐서 DB에 저장되도록 한다.
 //		OrderDto savedOrderDto = mapper.map(savedOrderEntity, OrderDto.class);
 
 		// Kafka
 		kafkaProducer.send("example-catalog-topic", orderDto);
-		orderProducer.send("orders", orderDto); // DB 저장
+//		orderProducer.send("orders", orderDto); // DB 저장
 
 		return orderDto;
 	}
